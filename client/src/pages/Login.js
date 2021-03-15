@@ -3,7 +3,7 @@ import { Button, Form } from 'semantic-ui-react'
 import { useMutation } from '@apollo/client'
 
 import { AuthContext } from '../context/auth'
-import { LOGIN_USER } from '../graphql/mutations'
+import { LOGIN_USER_MUTATION } from '../graphql/mutations'
 
 const Login = (props) => {
 
@@ -15,7 +15,7 @@ const Login = (props) => {
         password: ''
     })
 
-    const [ loginUser, { loading }] = useMutation(LOGIN_USER, {
+    const [ loginUser, { loading }] = useMutation(LOGIN_USER_MUTATION, {
         update(proxy, result) { //on successful mutation
             context.login(result.data.login)
             props.history.push('/')

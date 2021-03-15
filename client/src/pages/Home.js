@@ -11,7 +11,8 @@ const Home = () => {
 
     const context = useContext(AuthContext)
 
-    const { loading, data } = useQuery(FETCH_POSTS_QUERY)
+    const { loading, error, data } = useQuery(FETCH_POSTS_QUERY)
+    console.log(error);
 
     return (
         <Grid columns={3}>

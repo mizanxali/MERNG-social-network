@@ -3,7 +3,7 @@ import { Button, Form } from 'semantic-ui-react'
 import { useMutation } from '@apollo/client'
 
 import { AuthContext } from '../context/auth'
-import { REGISTER_USER } from '../graphql/mutations'
+import { REGISTER_USER_MUTATION } from '../graphql/mutations'
 
 const Register = (props) => {
 
@@ -17,7 +17,7 @@ const Register = (props) => {
         confirmPassword: ''
     })
 
-    const [ registerUser, { loading }] = useMutation(REGISTER_USER, {
+    const [ registerUser, { loading }] = useMutation(REGISTER_USER_MUTATION, {
         update(proxy, result) { //on successful mutation
             context.login(result.data.register)
             props.history.push('/')

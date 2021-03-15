@@ -3,7 +3,7 @@ import { Form, Button } from 'semantic-ui-react'
 import { useMutation } from '@apollo/client'
 
 import { FETCH_POSTS_QUERY } from '../graphql/queries'
-import { CREATE_POST } from '../graphql/mutations'
+import { CREATE_POST_MUTATION } from '../graphql/mutations'
 
 function PostForm() {
 
@@ -11,7 +11,7 @@ function PostForm() {
         body: ''
     })
 
-    const [ createPost, { error, loading }] = useMutation(CREATE_POST, {
+    const [ createPost, { error, loading }] = useMutation(CREATE_POST_MUTATION, {
         update(proxy, result) { //on successful mutation
 
             //UPDATE THE POSTS IN CACHE

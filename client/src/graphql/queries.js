@@ -8,6 +8,25 @@ export const FETCH_POSTS_QUERY = gql`
             createdAt
             username
             likes {
+                id
+                username
+            }
+            comments {
+                id
+            }
+        }
+    }
+`
+
+export const FETCH_POST_QUERY = gql`
+    query($postId: ID!) {
+        getPost(postId: $postId) {
+            id
+            body
+            createdAt
+            username
+            likes {
+                id
                 username
             }
             comments {

@@ -1,22 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Card, Image, Button, Label, Icon } from 'semantic-ui-react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 
+import { AuthContext } from '../context/auth'
+import LikeButton from './LikeButton'
+import DeleteButton from './DeleteButton'
+
 function PostCard(props) {
+
+    const context = useContext(AuthContext)
 
     const { id, body, createdAt, username, likes, comments } = props.post
 
-    const likePost = () => {
-        console.log('liked');
-    }
-
-    const commentOnPost = () => {
-        console.log('liked');
-    }
-
     return (
-        <Card fluid as={Link} to={`/posts/${id}`}>
+        <Card fluid>
             <Card.Content>
                 <Image
                 floated='right'
@@ -28,15 +26,8 @@ function PostCard(props) {
                 <Card.Description>{body}</Card.Description>
             </Card.Content>
             <Card.Content extra>
-                <Button as='div' labelPosition='right' onClick={likePost}>
-                    <Button color='teal' basic>
-                        <Icon name='heart' />
-                    </Button>
-                    <Label basic color='teal' pointing='left'>
-                        {likes.length}
-                    </Label>
-                </Button>
-                <Button as='div' labelPosition='right' onClick={commentOnPost}>
+                <LikeButton post={{ id, likes }} />
+                <Button labelPosition='right' as={Link} to={`/posts/${id}`}>
                     <Button color='blue' basic>
                         <Icon name='comments' />
                     </Button>
@@ -44,8 +35,11 @@ function PostCard(props) {
                         {comments.length}
                     </Label>
                 </Button>
+                {context.user && context.user.username===username && (
+                    <DeleteButton post={{ id }} />
+                )}
             </Card.Content>
-            </Card>
+        </Card>
     )
 }
 
