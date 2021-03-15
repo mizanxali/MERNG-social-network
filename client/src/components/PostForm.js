@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 import { Form, Button } from 'semantic-ui-react'
-import { gql, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 
 import { FETCH_POSTS_QUERY } from '../graphql/queries'
+import { CREATE_POST } from '../graphql/mutations'
 
 function PostForm() {
 
-    const [errors, setErrors] = useState(null)
     const [values, setValues] = useState({
         body: ''
     })
 
-    const [ createPost, { loading }] = useMutation(CREATE_POST, {
+    const [ createPost, { error, loading }] = useMutation(CREATE_POST, {
         update(proxy, result) { //on successful mutation
 
             //UPDATE THE POSTS IN CACHE
@@ -28,7 +28,7 @@ function PostForm() {
             values.body = ''
         },
         onError(err) {
-            setErrors(err)
+            console.log(err);
         },
         variables: {
             body: values.body
@@ -49,23 +49,12 @@ function PostForm() {
             <Form onSubmit={onSubmit} noValidate className={loading ?'loading' : ''}>
                 <h1 className='page-title'>Create a Post</h1>
                 <Form.Field>
-                    <Form.Input error={errors && errors.graphQLErrors[0].message} type='text' placeholder='Hello World!' name='body' value={values.body} onChange={onChange} />
+                    <Form.Input error={error && error.graphQLErrors[0].message} type='text' placeholder='Hello World!' name='body' value={values.body} onChange={onChange} />
                     <Button type='submit' color='teal'>POST</Button>
                 </Form.Field>
             </Form>
         </>
     )
 }
-
-const CREATE_POST = gql`
-    mutation login($body: String!) {
-        createPost(body: $body) {
-            id
-            body
-            createdAt
-            username
-        }
-    }
-`
 
 export default PostForm

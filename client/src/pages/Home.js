@@ -15,18 +15,16 @@ const Home = () => {
 
     return (
         <Grid columns={3}>
-            <Grid.Row className='page-title'>
+            {context.user && <Grid.Row className='page-title'>
                 <h1>Welcome back, {context.user.username}</h1>
-            </Grid.Row>
+            </Grid.Row> }
             <Grid.Row>
                 {context.user && (
                     <Grid.Column style={{marginBottom: '20px'}}>
                         <PostForm />
                     </Grid.Column>
                 )}
-                {loading ? (
-                    <h1>Loading posts....</h1>
-                ) : (
+                {loading ? (<h1>Loading posts....</h1>) : (
                     data.getPosts && data.getPosts.map(post => {
                         return (
                         <Grid.Column key={post.id} style={{marginBottom: '20px'}}>
