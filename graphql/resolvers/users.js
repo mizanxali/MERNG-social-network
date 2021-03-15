@@ -10,7 +10,8 @@ function generateToken(user) {
     const payload = {
         id: user.id,
         email: user.email,
-        username: user.username
+        username: user.username,
+        createdAt: user.createdAt
     }
     const token = jwt.sign(payload, JWT_SECRET, {expiresIn: 360000})
     return token
@@ -32,6 +33,16 @@ module.exports = {
                 throw new UserInputError('Username is taken', {
                     errors: {
                         username: 'This username is already taken'
+                    }
+                })
+            }
+
+            // Check if account with email already exists
+            const existingUser = await User.findOne({ email: args.userData.email })
+            if(existingUser) {
+                throw new UserInputError('Account with email exists', {
+                    errors: {
+                        email: 'An account with this email already exists'
                     }
                 })
             }
@@ -70,15 +81,21 @@ module.exports = {
             // check if user does not exist
             const user = await User.findOne({username: args.username})
             if(!user) {
-                errors.general = 'Username not found'
-                throw new UserInputError('Username not found', { errors })
+                throw new UserInputError('Username not found', {
+                    errors: {
+                        username: 'Username not found'
+                    }
+                })
             }
 
             // check if password is correct
             const doPasswordsMatch = await bcrypt.compare(args.password, user.password)
             if(!doPasswordsMatch) {
-                errors.general = 'Invalid credentials'
-                throw new UserInputError('Invalid credentials', { errors })
+                throw new UserInputError('Invalid password', {
+                    errors: {
+                        password: 'Invalid password'
+                    }
+                })
             }
 
             // Create auth token
