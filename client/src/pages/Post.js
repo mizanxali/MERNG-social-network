@@ -1,10 +1,11 @@
-import React, { useContext } from 'react'
-import { useQuery } from '@apollo/client'
-import { Card, Grid, Image, Button, Label, Icon } from 'semantic-ui-react'
+import React, { useContext, useState } from 'react'
+import { useQuery, useMutation } from '@apollo/client'
+import { Card, Grid, Image, Button, Label, Icon, Form } from 'semantic-ui-react'
 import moment from 'moment'
 import LikeButton from '../components/LikeButton'
 
 import { FETCH_POST_QUERY } from '../graphql/queries'
+import { CREATE_COMMENT_MUTATION } from '../graphql/mutations'
 
 import { AuthContext } from '../context/auth'
 import DeleteButton from '../components/DeleteButton'
@@ -21,12 +22,23 @@ function Post(props) {
         }
     })
 
+    const [comment, setCommment] = useState('')
+
+    const [createComment] = useMutation(CREATE_COMMENT_MUTATION, {
+        variables: {
+            postId: postId,
+            body: comment
+        },
+        update(proxy, result) {
+            setCommment('')
+        }
+    })
+
     function deletePostCallback() {
         props.history.push('/')
     }
 
     let post
-
     if(!data) {
         post = <p>Loading post....</p>
     } else {
@@ -64,6 +76,33 @@ function Post(props) {
                                 )}
                             </Card.Content>
                         </Card>
+                        {context.user && (
+                            <Card fluid>
+                                <Card.Content>
+                                    <p>Add a new comment</p>
+                                    <Form>
+                                        <div className='ui action input fluid'>
+                                            <input type='text' placeholder='Your thoughts...' value={comment} onChange={(event) => setCommment(event.target.value)} />
+                                            <button type='submit' className='ui button teal' disabled={comment.trim()===''} onClick={createComment}>POST</button>
+                                        </div>
+                                    </Form>
+                                </Card.Content>
+                            </Card>
+                        )}
+                        {comments.map(comment => {
+                            return (
+                                <Card fluid key={comment.id}>
+                                    <Card.Content>
+                                    {context.user && context.user.username===comment.username && (
+                                        <DeleteButton post={{ id }} commentId={comment.id} />
+                                    )}
+                                        <Card.Header>{comment.username}</Card.Header>
+                                        <Card.Meta>{moment(comment.createdAt).fromNow(true)}</Card.Meta>
+                                        <Card.Description>{comment.body}</Card.Description>
+                                    </Card.Content>
+                                </Card>
+                            )
+                        })}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

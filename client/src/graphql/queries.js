@@ -13,6 +13,9 @@ export const FETCH_POSTS_QUERY = gql`
             }
             comments {
                 id
+                username
+                createdAt
+                body
             }
         }
     }
